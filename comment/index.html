@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>评论插件</title>
+<link href="./css/font-awesome.min.css"  rel="stylesheet">
+<link rel="stylesheet"  href="./css/emoji.css">
+<style>
+	*{
+		margin: 0px;
+		padding: 0px;
+		font-family: Microsoft YaHei SimSun;
+	}
+	body{
+		color: #333;
+	}
+	a{
+		text-decoration: none;
+	}
+	.comment-container{
+		max-width: 1000px;
+		margin: 50px auto;
+		padding: 0px 10px;
+	}
+	.commentbox{
+		width: 100%;
+		padding-top: 5px;
+	}
+	
+	.myinput-group{
+		display: inline;
+		clear: both;
+	}
+	.myinput-group>label{
+		display:inline-block;
+		padding:5px 20px;
+		font-size: 1.1em;
+		background-color: #009688;
+		color: #fff;
+	}
+	.myinput-group>input{
+		outline: none;
+		width: 200px;
+		height:20px;
+		font-size: 1.1em;
+		padding: 5px 10px;
+		vertical-align:top;
+	}
+	
+	.commentbox>textarea{
+		overflow: auto;
+		word-break: break-all;
+		width: 98%;
+		height: 100px;
+		resize: none;
+		outline:none;
+		border:1px solid #ccc;
+		border-radius: 5px;
+		background-color: #FCFCFC;
+		padding: 10px;
+	}
+	.commentbox>.send-box{
+		clear:both;
+		width: 100%;
+		height: 50px;
+	}
+	.commentbox>.send-box>a>i{
+		font-size: 2em;
+		color: #ccc;
+	}
+	.commentbox>.send-box>a>i:HOVER{
+		color: #3dfd0f;
+	}
+	.commentbox>.send-box>a.btn-send{
+		width: 60px;
+		height:35px;
+		line-height:33px;
+		text-align: center;
+		float: right;
+		background-color: #5DC0DF;
+		border-radius: 5px;
+		color: #fff;
+	}
+	.comment-list{
+		width: 100%;
+	}
+	.comment-list>.comment-list-box{
+		clear: both;
+		padding-bottom:20px;
+		margin-bottom:20px;
+		border-bottom: 1px solid #eee;
+	}
+	
+	.comment-list>.comment-list-box>header{
+		position: relative;
+		width: 100%;
+		height: 50px;
+	}
+	.comment-list>.comment-list-box>header>.author-head{
+		width: 5%;
+		position: absolute;
+	}
+	.comment-list>.comment-list-box>header>.author-head img{
+		width: 100%;
+		border-radius: 50%;
+	}
+	.comment-list>.comment-list-box>header>.author-info{
+		padding-left:6%;
+	}
+	.comment-list>.comment-list-box>header>.author-info>a{
+		text-decoration: none;
+		color: #333;
+	}
+	.comment-list>.comment-list-box>header>.author-info>.authore-info-footer span{
+		display: inline-block;
+		margin-right: 10px;
+		color: #969696;
+	}
+	.comment-list>.comment-list-box>p.content{
+		padding:0.3em 0px 1em 0px; 
+	}
+	.comment-list>.comment-list-box>footer{
+		padding: 5px 0px;
+	}
+	.comment-list>.comment-list-box>footer>span{
+		color: #969696;
+		display: inline-block;
+		margin-right: 10px;
+	}
+	.comment-list>.comment-list-box>footer>span:HOVER{
+		color: #222;
+	}
+	.comment-list>.comment-list-box>footer>span>i.fa-globe{
+		color: green;
+	}
+	.comment-list>.comment-list-box>footer>span>i.fa-desktop{
+		color: #111;
+	}
+	.comment-list>.comment-list-box>footer>a{
+		text-decoration: none;
+		color: #969696;
+		display: inline-block;
+		margin-right: 10px;
+		float: right;
+	}
+	i{
+		padding-right: 5px;
+	}
+	.comment-list>.comment-list-box>footer>a:HOVER>i.fa-thumbs-o-up{
+		color: red;
+	}
+	.comment-list>.comment-list-box>footer>a:HOVER>i.fa-mail-reply,.comment-list>.comment-list-box>footer>a:HOVER>span{
+		color: #222;
+	}
+	.comment-list>.comment-list-box>.child-comment-list{
+		border-left: 3px solid #ccc;
+		padding-left: 5px;
+		margin-top: 0.5em;
+	}
+	.comment-list>.comment-list-box>.child-comment-list>.child-comment{
+		border-bottom: 1px dashed #ccc;
+		padding-bottom: 10px;
+	}
+	.comment-list>.comment-list-box>.child-comment-list>.child-comment>p{
+		padding: 0px 0px 0.5em 0px;
+	}
+	.comment-list>.comment-list-box>.child-comment-list>.child-comment>p>a{
+		text-decoration: none;
+		color: #3194D0;
+		padding: 0px 5px 0px 0px;
+	}
+	.comment-list>.comment-list-box>.child-comment-list>.child-comment>footer{
+		color: #969696;
+	}
+	.comment-list>.comment-list-box>.child-comment-list>.child-comment>footer>span{
+		display: inline-block;
+		margin-right: 10px;
+	}
+	.comment-list>.comment-list-box>.child-comment-list>.child-comment>footer>a{
+		text-decoration: none;
+		color: #969696;
+	}
+	.comment-list>.comment-list-box>.child-comment-list>.child-comment>footer>a:HOVER{
+		color: #222;
+	}
+	.red{
+		color: red;
+	}
+</style>
+</head>
+<body>
+
+<div class="comment-container">
+	<div class="myinput-group">
+		<label>昵称:</label><input type="text" name="nick_name" value="帅大叔"/>
+		<label>邮箱:</label><input type="text" name="email" value="1006059906@qq.com"/>
+	</div>
+	<div class="commentbox">
+		<textarea cols="80" rows="50" placeholder="来说几句吧......" class="mytextarea" id="content"></textarea>
+		<div class="send-box">
+			<a href="#" class="smile"><i class="fa fa-smile-o"></i></a>
+			<a href="#" class="btn-send" uid="1">发送</a>
+		</div>
+	</div>
+	<div class="comment-list">
+		
+	</div>
+</div>
+
+<script src="./js/jquery.min.js" ></script>
+<script src="./js/jquery.emoji.js" ></script>
+<script src="./js/jquery.comment.js" ></script>
+<script>
+	var userName="坏大叔";
+	var replyUserName="帅大叔";
+	var tableId="1";
+	var address="深圳市福田区";
+	var browse_version="chrome 62.0.3202.94";
+	var os_name="win8.1";
+	var floorNum = 1;
+	
+	var arr=[
+      {
+        "userPath": "./images/user2.png",
+        "create_time": "2017-12-21 10:00:00",
+        "reply_user_id": "",
+        "replyUserName": "",
+        "replybody": [
+          {
+            "userPath": "imgpath",
+            "create_time": "2017-12-21 10:10:00",
+            "reply_user_id": 85,
+            "replyUserName": "别问我",
+            "table_id": 1,
+            "comment_id": 13,
+            "content": "我这是回复体里面的内容了！！！！！！！！",
+            "praise_flag": 0,
+            "user_id": 82,
+            "parent_id": 10,
+            "praise_num": 0,
+            "userName": "rstyro"
+          }
+        ],
+        "table_id": 1,
+        "comment_id": 10,
+        "content": "好饿啊！！！！！！",
+        "praise_flag": 1,
+        "user_id": 85,
+        "parent_id": "",
+        "praise_num": 1,
+        "userName": "别问我"
+      },
+      {
+        "userPath": "./images/user3.png",
+        "create_time": "2017-12-21 00:00:00",
+        "reply_user_id": "",
+        "replyUserName": "",
+        "replybody": [],
+        "table_id": 1,
+        "comment_id": 8,
+        "content": "你吃了吗?",
+        "praise_flag": 0,
+        "user_id": 71,
+        "parent_id": "",
+        "praise_num": 0,
+        "userName": "断罪小学赵日天"
+      }
+    ];
+	
+	$(function(){
+		$(".smile").emoji();
+		floorNum = $(".comment-list").initComment({data:arr,floorNum:floorNum,userName:"坏家伙",reply_method:"replyAction",praise_method:"praiseAction"});
+		
+		$(".btn-send").click(function(){
+			var obj = new Object();
+			obj.comment_id="";
+			obj.parent_id="0";
+			obj.table_id="1";
+			obj.user_id="1";
+			obj.userName= $("[name='nick_name']").val();
+			obj.userPath="./images/user1.png";
+			obj.replyUserName="帅大叔";
+			obj.content=$("#content").val();
+			obj.reply_user_id="";
+			obj.praise_num=0;
+			obj.address="";
+			obj.browse_version="";
+			obj.os_name="";
+			obj.create_time="2017-12-20 12:00:10";
+			floorNum = $(".comment-list").comment({obj:obj,comment_method:"commentAction",reply_method:"replyAction",praise_method:"praiseAction",userName:obj.userName});
+			$("#content").val("");
+		});
+	})
+	
+	function commentAction(){
+		var data = $(".comment-list").getCommentBody(); 
+		data.comment_id="1111";
+		console.log("data",data);
+		var obj = new Object();
+		obj.status="success";
+		obj.msg="评论成功";
+		obj.data= data;
+		return obj;
+	}
+	
+	function replyAction(){
+		var data = $(".comment-list").getCommentBody();
+		data.userName= $("[name='nick_name']").val();
+		data.comment_id="2222";
+		var obj = new Object();
+		obj.status="success";
+		obj.msg="回复成功";
+		obj.data=data;
+		return obj;
+	}
+	
+	function praiseAction(){
+		var data = $(".comment-list").getCommentBody();
+		console.log("data",data);
+		var obj = new Object();
+		if(data.praise_flag == 1){
+			obj.status="outnumber";
+		}else{
+			obj.status="success";
+		}
+		obj.msg="点赞成功";
+		return obj;
+	}
+	
+</script>
+</body>
+</html>
